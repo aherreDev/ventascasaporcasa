@@ -18,28 +18,35 @@ import {
     useToast
   } from "@chakra-ui/react";
   import { FaUserAlt, FaLock } from "react-icons/fa";
-  
-  
+
+
   const CFaUserAlt = chakra(FaUserAlt);
   const CFaLock = chakra(FaLock);
-  
+
 function Login() {
   const [nombre,setNombre]=useState('')
   const [contrasena,setContrasena]=useState('')
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const handleShowClick = () => setShowPassword(!showPassword);
   const navigate=useNavigate()
-  const toast = useToast()  
+  const toast = useToast()
 
- 
+
 
 async function iraMenuPrincipal()
 {
-      
-const resultado=await fetch('https://pmoviles1.000webhostapp.com/api/apiv.php?comando=login&nombre='+
-nombre+'&contrasena='+contrasena)
-const datos=await resultado.json()
+
+// const resultado=await fetch('https://pmoviles1.000webhostapp.com/api/apiv.php?comando=login&nombre='+
+// nombre+'&contrasena='+contrasena)
+const datos= {
+  records: [
+    {
+      tienda: "Toño",
+      id: "2"
+    }
+  ]
+}
 
 if(datos.records.length>0)
 {
@@ -64,7 +71,7 @@ toast({
 
 
   return (
-   
+
     <Flex
       flexDirection="column"
       width="100wh"
@@ -82,7 +89,7 @@ toast({
         <Avatar bg="teal.500" />
         <Heading color="teal.400">Bienvenido</Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
-         
+
             <Stack
               spacing={4}
               p="1rem"
@@ -132,7 +139,7 @@ toast({
                 Entrar
               </Button>
             </Stack>
-         
+
         </Box>
       </Stack>
       <Box>
@@ -140,7 +147,7 @@ toast({
         <Link color="teal.500" href="#">
           Inscribete
         </Link>
-      </Box>        
+      </Box>
     </Flex>
     )
 }
