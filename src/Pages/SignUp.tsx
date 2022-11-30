@@ -17,13 +17,19 @@ import {
   InputRightElement,
   useToast,
 } from "@chakra-ui/react";
-import { FaUserAlt, FaLock } from "react-icons/fa";
+import { FaUserAlt, FaLock, FaMailBulk, FaStore } from "react-icons/fa";
 
 const CFaUserAlt = chakra(FaUserAlt);
+const CFaMailBulk = chakra(FaMailBulk);
+const CFaStore = chakra(FaStore);
 const CFaLock = chakra(FaLock);
 
-function Login() {
+const API_URL = "https://drenteria3.000webhostapp.com/apilogin.php";
+
+function SignUp() {
   const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [tienda, setTienda] = useState("");
   const [contrasena, setContrasena] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +39,7 @@ function Login() {
 
   async function iraMenuPrincipal() {
     const resultado = await fetch(
-      `https://drenteria3.000webhostapp.com/apilogin.php?comando=login&nombre=${nombre}&contrasena=${contrasena}`
+      `${API_URL}?comando=signin&nombre=${nombre}&contrasena=${contrasena}&correo=${email}&tienda=${tienda}`
     );
     // const datos = {
     //   records: [
@@ -46,17 +52,21 @@ function Login() {
 
     const datos = await resultado.json();
 
-    if (datos.records.length > 0) {
-      navigate("/menuprincipal", {
-        state: {
-          userId: datos.records[0].id,
-          tienda: datos.records[0].tienda,
-        },
+    console.log(datos);
+
+    if (datos.estatus === "ok") {
+      toast({
+        title: "Usuario creado",
+        description: `Usuario creado con éxito. Ahora puedes iniciar sesión.`,
+        status: "success",
+        duration: 4000,
+        isClosable: true,
       });
+      navigate("/");
     } else {
       toast({
         title: "Usuario",
-        description: "No encontramos un usuario con esos datos.",
+        description: "No pudimos crear un usuario con esos datos.",
         status: "warning",
         duration: 4000,
         isClosable: true,
@@ -102,6 +112,37 @@ function Login() {
                 />
               </InputGroup>
             </FormControl>
+
+            <FormControl>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<CFaMailBulk color="gray.300" />}
+                />
+                <Input
+                  type="text"
+                  placeholder="correo de usuario"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </InputGroup>
+            </FormControl>
+
+            <FormControl>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<CFaStore color="gray.300" />}
+                />
+                <Input
+                  type="text"
+                  placeholder="nombre de tienda"
+                  value={tienda}
+                  onChange={(e) => setTienda(e.target.value)}
+                />
+              </InputGroup>
+            </FormControl>
+
             <FormControl>
               <InputGroup>
                 <InputLeftElement
@@ -139,13 +180,13 @@ function Login() {
         </Box>
       </Stack>
       <Box>
-        Nuevo con nosotros?{" "}
-        <Link color="teal.500" href="signup">
-          Inscribete
+        Ya tienes una cuenta?{" "}
+        <Link color="teal.500" href="/">
+          Accede a ella
         </Link>
       </Box>
     </Flex>
   );
 }
 
-export default Login;
+export default SignUp;

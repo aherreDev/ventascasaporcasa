@@ -14,19 +14,19 @@ import {
 } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Ticket } from "../types/crud";
+import { Client, Ticket } from "../types/crud";
 
-const API_URL = "https://drenteria3.000webhostapp.com/apiticket.php";
+const API_URL = "https://drenteria3.000webhostapp.com/apicliente.php";
 
-function Ventas() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+const Clientes = () => {
+  const [tickets, setTickets] = useState<Client[]>([]);
   const location = useLocation();
   let userId = location.state.userId;
   let tienda = location.state.tienda;
   const navigate = useNavigate();
 
   const getApiData = async () => {
-    const resultado = await fetch(`${API_URL}?comando=todoslostickets`);
+    const resultado = await fetch(`${API_URL}?comando=clientes&id=${userId}`);
     const datos = await resultado.json();
     setTickets(datos);
   };
@@ -35,17 +35,17 @@ function Ventas() {
     getApiData();
   }, []);
 
-  function editarVenta(item: Ticket) {
-    navigate("/editarventa", {
+  function editarCliente(item: Client) {
+    navigate("/editarcliente", {
       state: {
-        ticket: item,
-        userId,
+        cliente: item,
+        userId: userId,
       },
     });
   }
 
-  function agregarProducto() {
-    navigate("/crearventa", {
+  function agregarCliente() {
+    navigate("/crearcliente", {
       state: {
         userId: userId,
       },
@@ -83,7 +83,7 @@ function Ventas() {
             Regresar
           </Box>
           <Box p="4">
-            <Text fontSize="lg">Ventas</Text>
+            <Text fontSize="lg">Clientes</Text>
           </Box>
           <Spacer />
 
@@ -92,7 +92,7 @@ function Ventas() {
             bg="teal.400"
             as="button"
             borderRadius="md"
-            onClick={agregarProducto}
+            onClick={agregarCliente}
           >
             Agregar
           </Box>
@@ -112,15 +112,16 @@ function Ventas() {
                 borderRadius="md"
                 alignItems="center"
                 as="button"
-                onClick={() => editarVenta(item)}
+                onClick={() => editarCliente(item)}
               >
                 <Center></Center>
                 <Box color="black">
                   <Text fontSize="lg" fontWeight="bold">
-                    Ticket id: {item.id}
+                    Cliente id: {item.id}
                   </Text>
-                  <Text fontSize="md">User's id: {item.idcliente}</Text>
-                  <Text fontSize="sm">Last update {item.fecha}</Text>
+                  <Text fontSize="md">Cliente email: {item.correo}</Text>
+                  <Text fontSize="sm">Direccion: {item.direccion}</Text>
+                  <Text fontSize="sm">Telefono: {item.telefono}</Text>
                 </Box>
               </Box>
             ))}
@@ -129,6 +130,6 @@ function Ventas() {
       </Stack>
     </Flex>
   );
-}
+};
 
-export default Ventas;
+export default Clientes;

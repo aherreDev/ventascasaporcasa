@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   SimpleGrid,
   Box,
@@ -18,12 +18,18 @@ import {
   Center,
   Select,
   FormLabel,
+  Heading,
 } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Ticket } from "../types/crud";
 
-const API_URL = "https://drenteria3.000webhostapp.com/api.php";
+interface TicketDetails {
+  ticket: Ticket;
+  ticketDetails: any;
+  products: any[];
+  utilidad: number;
+}
 
 function EditarVenta() {
   const location = useLocation();
@@ -36,45 +42,58 @@ function EditarVenta() {
   const [fecha, setFecha] = useState(
     ticket.fecha ? ticket.fecha : new Date().toISOString()
   );
+  const [ticketDetails, setTicketDetails] = useState<TicketDetails | null>(
+    null
+  );
   const toast = useToast();
 
-  console.log(userId);
+  const API_URL = `http://localhost:3500/sales/${ticket.id}?idClient=${idCliente}&idUser=${userId}`;
 
-  async function guardarProducto() {
-    const respuesta = await fetch(
-      `${API_URL}?comando=editarTicket&id=${ticket.id}&fecha=${fecha}&idcliente=${idCliente}`
-    );
-    const datos = await respuesta.json();
+  // async function guardarProducto() {
+  //   const respuesta = await fetch(
+  //     `${API_URL}?comando=editarTicket&id=${ticket.id}&fecha=${fecha}&idcliente=${idCliente}`
+  //   );
+  //   const datos = await respuesta.json();
 
-    if (datos.estatus === "ok") navigate(-1);
-    else {
-      toast({
-        title: "Error while updating Ticket",
-        description: "No se pudo guardar la venta.",
-        status: "warning",
-        duration: 4000,
-        isClosable: true,
-      });
-    }
-  }
+  //   if (datos.estatus === "ok") navigate(-1);
+  //   else {
+  //     toast({
+  //       title: "Error while updating Ticket",
+  //       description: "No se pudo guardar la venta.",
+  //       status: "warning",
+  //       duration: 4000,
+  //       isClosable: true,
+  //     });
+  //   }
+  // }
 
-  const eliminarTicket = async () => {
-    const respuesta = await fetch(
-      `${API_URL}?comando=eliminarTicket&id=${ticket.id}`
-    );
-    const datos = await respuesta.json();
+  // const eliminarTicket = async () => {
+  //   const respuesta = await fetch(
+  //     `${API_URL}?comando=eliminarTicket&id=${ticket.id}`
+  //   );
+  //   const datos = await respuesta.json();
 
-    if (datos.estatus === "ok") navigate(-1);
-    else {
-      toast({
-        title: "Error while removing Ticket",
-        description: "No se pudo guardar la venta.",
-        status: "warning",
-        duration: 4000,
-        isClosable: true,
-      });
-    }
+  //   if (datos.estatus === "ok") navigate(-1);
+  //   else {
+  //     toast({
+  //       title: "Error while removing Ticket",
+  //       description: "No se pudo guardar la venta.",
+  //       status: "warning",
+  //       duration: 4000,
+  //       isClosable: true,
+  //     });
+  //   }
+  // };
+
+  const fetchTicketDetails = async () => {
+    const response = await fetch(API_URL);
+    const data = await response.json();
+    setTicketDetails(data.record);
   };
+
+  useEffect(() => {
+    fetchTicketDetails();
+  }, []);
 
   return (
     <Flex
@@ -106,11 +125,11 @@ function EditarVenta() {
             Regresar
           </Box>
           <Box p="4">
-            <Text fontSize="lg">Editar Venta</Text>
+            <Text fontSize="lg">Detalles de Venta</Text>
           </Box>
           <Spacer />
 
-          <Box
+          {/* <Box
             p="4"
             bg="teal.400"
             as="button"
@@ -128,7 +147,7 @@ function EditarVenta() {
             onClick={guardarProducto}
           >
             Guardar
-          </Box>
+          </Box> */}
         </Flex>
         <Box display="flex" mt="2" alignItems="center">
           <Stack
@@ -144,31 +163,27 @@ function EditarVenta() {
                 backgroundColor="whiteAlpha.900"
                 boxShadow="md"
               >
-                <FormControl>
-                  <FormLabel>Seleccione la fecha de la venta</FormLabel>
-                  <InputGroup>
-                    <Input
-                      placeholder="Fecha de venta"
-                      value={fecha}
-                      onChange={(e) => setFecha(e.target.value)}
-                      type="date"
-                    />
-                  </InputGroup>
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Seleccione un producto</FormLabel>
-                  <InputGroup>
-                    <Select placeholder="Select products" disabled>
-                      {/* TODO: El team de los productos debe actualizar este code :p */}
-
-                      <option value="">Seleccione un producto</option>
-                      <option value="option1">Product 1</option>
-                      <option value="option2">Product 2</option>
-                      <option value="option3">Product 3</option>
-                    </Select>
-                  </InputGroup>
-                </FormControl>
+                <Box>
+                  <Heading size="xl">
+                    Ticket #{ticketDetails?.ticket.id} -{" "}
+                    {ticketDetails?.ticket.fecha}
+                  </Heading>
+                </Box>
+                <Box>
+                  <Heading size="lg">Products</Heading>
+                  {ticketDetails?.products.map((product) => (
+                    <Box key={product.id}>
+                      <Text>
+                        {product.nombre} - PV {product.preciodeventa} - PC{" "}
+                        {product.preciodecosto}
+                      </Text>
+                    </Box>
+                  ))}
+                </Box>
+                <Box>
+                  <Heading size="md">Utilidad</Heading>
+                  <Text>{ticketDetails?.utilidad}</Text>
+                </Box>
               </Stack>
             </Box>
           </Stack>

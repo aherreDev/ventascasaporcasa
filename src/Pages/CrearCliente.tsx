@@ -20,36 +20,30 @@ import {
 import { StarIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const API_URL = "https://drenteria3.000webhostapp.com/apiproducto.php";
+const API_URL = "https://drenteria3.000webhostapp.com/apicliente.php";
 
-function Nuevoproducto() {
+function CrearCliente() {
   const [nombre, setNombre] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [cantidad, setCantidad] = useState("");
-  const [preciodecosto, setPreciodecosto] = useState("");
-  const [preciodeventa, setPreciodeventa] = useState("");
-  const [urlproducto, setUrlproducto] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [email, setEmail] = useState("");
   const toast = useToast();
   const location = useLocation();
   let userId = location.state.userId;
   const navigate = useNavigate();
   console.log(userId);
 
-  async function guardarProducto() {
+  async function guardarCliente() {
     const respuesta = await fetch(
       API_URL +
-        "?comando=agregarProducto&nombre=" +
+        "?comando=agregarcliente&nombre=" +
         nombre +
-        "&descripcion=" +
-        descripcion +
-        "&cantidad=" +
-        cantidad +
-        "&preciodecosto=" +
-        preciodecosto +
-        "&preciodeventa=" +
-        preciodeventa +
-        "&urldelproducto=" +
-        urlproducto +
+        "&direccion=" +
+        direccion +
+        "&telefono=" +
+        telefono +
+        "&correo=" +
+        email +
         "&idusuario=" +
         userId
     );
@@ -58,8 +52,8 @@ function Nuevoproducto() {
     if (datos.estatus === "ok") navigate(-1);
     else {
       toast({
-        title: "Producto",
-        description: "No se pudo guardar el producto.",
+        title: "Cliente",
+        description: "No se pudo guardar el cliente.",
         status: "warning",
         duration: 4000,
         isClosable: true,
@@ -97,7 +91,7 @@ function Nuevoproducto() {
             Regresar
           </Box>
           <Box p="4">
-            <Text fontSize="lg">Agregar Producto</Text>
+            <Text fontSize="lg">Agregar Cliente</Text>
           </Box>
           <Spacer />
 
@@ -106,7 +100,7 @@ function Nuevoproducto() {
             bg="teal.400"
             as="button"
             borderRadius="md"
-            onClick={guardarProducto}
+            onClick={guardarCliente}
           >
             Guardar
           </Box>
@@ -139,9 +133,9 @@ function Nuevoproducto() {
                   <InputGroup>
                     <Input
                       type="text"
-                      placeholder="describelo"
-                      value={descripcion}
-                      onChange={(e) => setDescripcion(e.target.value)}
+                      placeholder="Dirección del cliente"
+                      value={direccion}
+                      onChange={(e) => setDireccion(e.target.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -149,29 +143,9 @@ function Nuevoproducto() {
                   <InputGroup>
                     <Input
                       type="number"
-                      placeholder="cantidad de unidades"
-                      value={cantidad}
-                      onChange={(e) => setCantidad(e.target.value)}
-                    />
-                  </InputGroup>
-                </FormControl>
-                <FormControl>
-                  <InputGroup>
-                    <Input
-                      type="number"
-                      placeholder="precio de costo"
-                      value={preciodecosto}
-                      onChange={(e) => setPreciodecosto(e.target.value)}
-                    />
-                  </InputGroup>
-                </FormControl>
-                <FormControl>
-                  <InputGroup>
-                    <Input
-                      type="number"
-                      placeholder="precio de venta"
-                      value={preciodeventa}
-                      onChange={(e) => setPreciodeventa(e.target.value)}
+                      placeholder="Telefono de contacto"
+                      value={telefono}
+                      onChange={(e) => setTelefono(e.target.value)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -179,15 +153,12 @@ function Nuevoproducto() {
                   <InputGroup>
                     <Input
                       type="text"
-                      placeholder="url de imagen del producto"
-                      value={urlproducto}
-                      onChange={(e) => setUrlproducto(e.target.value)}
+                      placeholder="Correo electronico"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </InputGroup>
                 </FormControl>
-                <Center>
-                  <Image src={urlproducto} height="200" borderRadius="md" />
-                </Center>
               </Stack>
             </Box>
           </Stack>
@@ -197,4 +168,4 @@ function Nuevoproducto() {
   );
 }
 
-export default Nuevoproducto;
+export default CrearCliente;
